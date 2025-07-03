@@ -55,7 +55,7 @@ ROOT_URLCONF = 'privydrop_frontend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'app' / 'templates'],
+        'DIRS': [BASE_DIR / 'app_django' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
