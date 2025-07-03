@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib import messages
 import requests
 
 FASTAPI_URL = "https://privydrop.onrender.com"
@@ -12,12 +13,15 @@ def home(request):
 def upload(request):
     message = ""
     encrypted_id = ""
+    token = request.session.get("user_token")
+    if not token:
+        return redirect("login")
+
     if request.method == "POST":
         file = request.FILES.get("file")
         if file:
             headers = {
-                # OPS token
-                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJub29yYWxhbXplZXNoYW5AZ21haWwuY29tIiwicm9sZSI6Im9wcyJ9.sunsraQMlHP-_NfocfcvVfENV9IU2eEd6Dl5cM6cCfs"
+                "token": token
             }
             response = requests.post(
                 f"{FASTAPI_URL}/files/upload",
@@ -27,7 +31,6 @@ def upload(request):
             print("Upload Response JSON:", response.text)
             if response.status_code == 200:
                 data = response.json()
-                # Multiple key fallback
                 encrypted_id = data.get("encryption_id") or data.get("encrypted_id") or data.get("encryptedId") or ""
                 if encrypted_id:
                     message = f"✅ File uploaded successfully! Encryption ID: {encrypted_id}"
@@ -35,6 +38,7 @@ def upload(request):
                     message = "⚠️ Uploaded but encryption ID missing!"
             else:
                 message = f"❌ Upload failed! ({response.status_code})"
+
     return render(request, 'app/upload.html', {
         "message": message,
         "encrypted_id": encrypted_id
@@ -60,7 +64,9 @@ def contact(request):
 
 def file_list(request):
     files = []
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzeWVkemVlc2hhbjgwMzEwMUBnbWFpbC5jb20iLCJyb2xlIjoiY2xpZW50In0.p-30lNJ-R322NORz-3CcvLCchzAVp3LNt7u7rFR0kNg"
+    token = request.session.get("user_token")
+    if not token:
+        return redirect("login")
 
     list_resp = requests.get(
         f"{FASTAPI_URL}/files/list",
@@ -83,9 +89,13 @@ def file_list(request):
 
 
 def download_file(request, encrypted_id):
+    token = request.session.get("user_token")
+    if not token:
+        return redirect("login")
+
     api_url = f"{FASTAPI_URL}/files/download-direct/{encrypted_id}"
     headers = {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzeWVkemVlc2hhbjgwMzEwMUBnbWFpbC5jb20iLCJyb2xlIjoiY2xpZW50In0.p-30lNJ-R322NORz-3CcvLCchzAVp3LNt7u7rFR0kNg"
+        "token": token
     }
 
     response = requests.get(api_url, headers=headers)
@@ -100,7 +110,6 @@ def download_file(request, encrypted_id):
         return HttpResponse(f"❌ Error downloading file: {response.status_code}")
 
 
-# Optional signup/login views (if you want to integrate)
 def signup(request):
     message = ""
     if request.method == "POST":
@@ -112,14 +121,14 @@ def signup(request):
                 json={"email": email, "password": password}
             )
             if response.status_code == 200:
-                message = "✅ Signup successful! Please login."
+                messages.success(request, "✅ Signup successful! Please login.")
+                return redirect("login")
             else:
-                message = f"❌ Signup failed! ({response.status_code})"
+                message = f"❌ Signup failed! ({response.json().get('detail', 'Unknown error')})"
     return render(request, "app/signup.html", {"message": message})
 
 
 def login(request):
-    message = ""
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -131,12 +140,14 @@ def login(request):
             if response.status_code == 200:
                 token = response.json().get("access_token")
                 request.session["user_token"] = token
+                messages.success(request, "✅ Login successful!")
                 return redirect("home")
             else:
-                message = "❌ Login failed!"
-    return render(request, "app/login.html", {"message": message})
+                messages.error(request, "❌ Login failed! Invalid credentials.")
+    return render(request, "app/login.html")
 
 
 def logout(request):
     request.session.pop("user_token", None)
-    return redirect("home")
+    messages.info(request, "🔓 Logged out successfully.")
+    return redirect("login")
