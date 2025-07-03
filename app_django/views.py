@@ -10,6 +10,7 @@ def home(request):
 
 def upload(request):
     message = ""
+    encryption_id = ""
     if request.method == "POST":
         file = request.FILES.get("file")
         if file:
@@ -19,14 +20,19 @@ def upload(request):
             }
             response = requests.post(
                 f"{FASTAPI_URL}/files/upload",
-                files={"file": file},
+                files={"file": (file.name, file.read())},
                 headers=headers
             )
             if response.status_code == 200:
+                data = response.json()
+                encryption_id = data.get("file_id")
                 message = "✅ File uploaded successfully!"
             else:
                 message = f"❌ Upload failed! ({response.status_code})"
-    return render(request, 'app/upload.html', {"message": message})
+    return render(request, 'app/upload.html', {
+        "message": message,
+        "encryption_id": encryption_id
+    })
 
 def download(request):
     download_link = ""
