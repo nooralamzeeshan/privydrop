@@ -9,6 +9,8 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path("download/<str:encrypted_id>/", views.download_file, name="download_file"),
     path("files/", views.file_list, name="file_list"),
+    path("signup/", views.signup, name="signup"),
+    path("login/", views.login, name="login"),
 
 
 ]
