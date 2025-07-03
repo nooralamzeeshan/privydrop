@@ -11,6 +11,8 @@ urlpatterns = [
     path("files/", views.file_list, name="file_list"),
     path("signup/", views.signup, name="signup"),
     path("login/", views.login, name="login"),
+    path("logout/", views.logout, name="logout"),
+
 
 
 ]
