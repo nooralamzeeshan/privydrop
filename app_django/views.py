@@ -10,28 +10,34 @@ def home(request):
 
 def upload(request):
     message = ""
-    encryption_id = ""
+    encrypted_id = ""
     if request.method == "POST":
         file = request.FILES.get("file")
         if file:
             headers = {
-                # 🔐 OPS user ka token
                 "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJub29yYWxhbXplZXNoYW5AZ21haWwuY29tIiwicm9sZSI6Im9wcyJ9.sunsraQMlHP-_NfocfcvVfENV9IU2eEd6Dl5cM6cCfs"
             }
             response = requests.post(
                 f"{FASTAPI_URL}/files/upload",
-                files={"file": (file.name, file.read())},
+                files={"file": file},
                 headers=headers
             )
+            # Yeh print karo console me taaki dekho JSON kya aaya
+            print("Upload Response JSON:", response.text)
+
             if response.status_code == 200:
                 data = response.json()
-                encryption_id = data.get("file_id")
-                message = "✅ File uploaded successfully!"
+                encrypted_id = data.get("encryption_id") or data.get("encrypted_id") or ""
+                if encrypted_id:
+                    message = "✅ File uploaded successfully!"
+                else:
+                    message = "⚠️ Uploaded but encryption ID missing!"
             else:
                 message = f"❌ Upload failed! ({response.status_code})"
+
     return render(request, 'app/upload.html', {
         "message": message,
-        "encryption_id": encryption_id
+        "encrypted_id": encrypted_id
     })
 
 def download(request):
