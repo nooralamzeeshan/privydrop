@@ -24,3 +24,4 @@ passlib[bcrypt]
 email-validator
 Django>=4.2
 requests
+gunicorn
