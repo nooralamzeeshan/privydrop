@@ -1,0 +1,13 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+    <h1>Upload File</h1>
+    {% if message %}
+        <p><strong>{{ message }}</strong></p>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="file" required>
+        <button type="submit" class="btn btn-primary mt-3">Upload</button>
+    </form>
+{% endblock %}

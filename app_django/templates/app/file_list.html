@@ -1,0 +1,31 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Available Files</h2>
+    {% if files %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Filename</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td>{{ file.id }}</td>
+                    <td>{{ file.filename }}</td>
+                    <td>
+                        <a href="{% url 'download_file' file.encrypted_id %}" class="btn btn-primary">Download</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No files found.</p>
+    {% endif %}
+</div>
+{% endblock %}

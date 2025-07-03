@@ -1,0 +1,30 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<h1>About PrivyDrop</h1>
+<p>
+    <strong>PrivyDrop</strong> is a secure and user-friendly platform designed to make file sharing safe and efficient.
+    Whether you are a student, professional, or business, PrivyDrop provides an easy way to upload, encrypt, and share sensitive documents without worrying about unauthorized access.
+</p>
+
+<p>
+    With PrivyDrop, operations users can upload files like presentations, documents, and spreadsheets. These files are stored securely on the server and assigned a unique, encrypted ID.
+    Clients can then use this encrypted ID to download the files safely. Every download link is secure and only accessible by authorized users, ensuring your data remains protected at all times.
+</p>
+
+<p>
+    <strong>Key Features of PrivyDrop:</strong>
+    <ul style="text-align:left; max-width:700px; margin:auto;">
+        <li>Upload files securely (supports .pptx, .docx, .xlsx formats)</li>
+        <li>Generate encrypted download URLs for added security</li>
+        <li>Role-based access: Operations users upload, Clients download</li>
+        <li>Simple and intuitive interface for hassle-free experience</li>
+        <li>Built with Django frontend and FastAPI backend for performance and scalability</li>
+    </ul>
+</p>
+
+<p>
+    PrivyDrop is perfect for securely sharing project reports, presentations, and confidential data between teams and clients.
+    Start using PrivyDrop today and experience a modern, reliable way to share your files securely.
+</p>
+{% endblock %}
