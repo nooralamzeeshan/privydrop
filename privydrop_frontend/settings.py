@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'app_django.wsgi.application'
+WSGI_APPLICATION = 'privydrop_frontend.wsgi.application'
 
 
 # Database
