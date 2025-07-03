@@ -2,9 +2,15 @@
 
 {% block content %}
     <h1>Upload File</h1>
+
     {% if message %}
         <p><strong>{{ message }}</strong></p>
     {% endif %}
+
+    {% if encrypted_id %}
+        <p><strong>Encryption ID:</strong> {{ encrypted_id }}</p>
+    {% endif %}
+
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="file" required>
