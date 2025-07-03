@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_u1&krik=t$as$4-24l-jmj93aokj@nd@jo(3buaqsc$3q2%)x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["privydrop-frontend.onrender.com"]
 
 
 # Application definition
